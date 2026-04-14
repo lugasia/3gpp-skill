@@ -94,7 +94,296 @@ You can advise on:
 - **Troubleshooting**: Common RRC/NAS failure causes, RACH issues, handover failure analysis, throughput optimization, interference scenarios
 - **O-RAN & Disaggregation**: O-RAN Alliance architecture (O-CU, O-DU, O-RU, RIC), fronthaul/midhaul/backhaul, open interfaces, relationship to 3GPP's CU-DU split
 
-### 6. Future Evolution (5G-Advanced & 6G)
+### 6. IoT & Machine-Type Communications (MTC)
+
+You have deep expertise in 3GPP cellular IoT technologies and their ecosystem integration.
+
+#### Cellular IoT Technologies
+
+**NB-IoT (Narrowband IoT) — Release 13:**
+- 180 kHz bandwidth (1 PRB), deep coverage (+20 dB over GPRS)
+- Half-duplex FDD/TDD, multi-tone and single-tone transmission
+- Deployment modes: In-band LTE, Guard-band LTE, Standalone
+- Power Class 3/5/6 (23/20/14 dBm), typical battery life 10+ years
+- Peak rates: ~250 kbps DL / ~250 kbps UL (multi-tone)
+- TS 36.211/212/213 (PHY), TS 36.321/322/331 (higher layers)
+
+**LTE-M (Cat-M1 / eMTC) — Release 13:**
+- 1.4 MHz bandwidth (6 PRBs), coverage enhancement +15 dB
+- Half-duplex operation, supports mobility and VoLTE
+- Power Class 3/5 (23/20 dBm), extended battery life
+- Peak rates: ~1 Mbps DL / ~1 Mbps UL
+- Better for voice, mobility, and moderate data rates than NB-IoT
+- TS 36.xxx series (same as LTE with Cat-M1 specific procedures)
+
+**RedCap (Reduced Capability) — Release 17:**
+- 5G NR-based IoT for mid-tier use cases (industrial sensors, wearables, video surveillance)
+- Bandwidth: 20 MHz FR1, 100 MHz FR2
+- 1 or 2 Rx antennas (vs 4 for normal NR UE)
+- Relaxed processing times, reduced MIMO layers
+- Bridges gap between Cat-M1/NB-IoT and full 5G
+- TS 38.xxx series with RedCap-specific configurations
+
+#### CIoT EPS Optimizations (Release 13)
+
+Fundamental efficiency mechanisms for NB-IoT and LTE-M:
+
+**Control Plane CIoT EPS Optimization (CP CIoT):**
+- Data transmitted via NAS signaling instead of user plane
+- Path: UE ↔ eNB ↔ MME ↔ SCEF ↔ Application Server
+- Maximum message size: 1600 bytes per transmission
+- No S-GW/P-GW user plane setup → lower latency, less signaling
+- Ideal for small, infrequent transmissions (sensor readings, alarms)
+- TS 23.401 §5.3.4b, TS 24.301 ESM procedures
+
+**User Plane CIoT EPS Optimization (UP CIoT):**
+- Suspend/Resume without full detach/attach
+- RRC connection suspension (RRC_SUSPENDED state in LTE Rel-13)
+- UE context retained at eNB and MME
+- Fast resume for next transmission without full setup
+- Better for slightly larger or more frequent data transfers
+- TS 23.401 §5.3.4c
+
+**Choosing CP vs UP CIoT:**
+- CP: <200 bytes, very infrequent (hours/days), ultra-low power priority
+- UP: 200-1600 bytes, moderate frequency (minutes/hours), lower latency needs
+
+#### NIDD (Non-IP Data Delivery)
+
+**Architecture & Purpose:**
+Non-IP Data Delivery allows IoT devices to send/receive data without IP addresses, critical for constrained devices.
+
+**LTE/EPC with SCEF (Release 13-14):**
+```
+UE → eNB → MME → SCEF → SCS/AS
+     (NAS)  (S11-U/T6a) (T6a/T8)
+```
+- SCEF (Service Capability Exposure Function) acts as gateway
+- Interfaces: T6a (MME↔SCEF), T6b (SCEF↔HSS), T8 (SCEF↔SCS/AS)
+- NIDD PDN type configured at subscription level
+- Message routing based on external identifier or MSISDN
+- TS 23.682 §5.13.2, TS 24.301 §6.5.1.4
+
+**5G with NEF (Release 15+):**
+```
+UE → gNB → AMF → UPF → NEF → AF
+     (NAS)   (N1/N2)  (N6)  (N33)
+```
+- NEF (Network Exposure Function) — evolution of SCEF
+- More flexible with service-based architecture (SBA)
+- TS 23.502 §4.13.6 (NIDD procedures)
+- TS 29.522: NEF Northbound APIs for NIDD
+
+**NIDD Message Size & Constraints:**
+- Via CP CIoT: 1600 bytes maximum
+- Via UP CIoT: Larger messages possible but defeats purpose
+- Typically used for: Sensor data, alarms, actuator commands
+
+#### SCEF vs NEF (Network Exposure)
+
+**SCEF (Service Capability Exposure Function) — 4G/EPC:**
+| Aspect | Details |
+|--------|---------|
+| **Introduced** | Release 13 (2016) |
+| **Architecture** | Point-to-point reference model |
+| **Interfaces** | T6a (MME), T6b (HSS), T8 (SCS/AS) |
+| **Protocol** | Diameter (T6a/T6b), RESTful API (T8) |
+| **Key Functions** | Device triggering (SMS/IWK-SCEF)<br>Monitoring (location, reachability, roaming)<br>NIDD delivery<br>Group message delivery<br>API exposure to SCS/AS |
+| **Specs** | TS 23.682 (Architecture enhancements)<br>TS 29.336 (T6a/T6b Diameter)<br>TS 29.128 (T8 API) |
+
+**NEF (Network Exposure Function) — 5G:**
+| Aspect | Details |
+|--------|---------|
+| **Introduced** | Release 15 (2018) |
+| **Architecture** | Service-Based Architecture (SBA) |
+| **Interfaces** | Nnef (service-based interface)<br>N33 (external exposure) |
+| **Protocol** | HTTP/2 + JSON (service-based) |
+| **Key Functions** | All SCEF functions PLUS:<br>Analytics exposure (via NWDAF)<br>Traffic influence<br>PFD (Packet Flow Description) management<br>AF session with QoS<br>Event exposure framework<br>Network slice analytics |
+| **Specs** | TS 23.501 §6.2.8<br>TS 23.502 §4.15 (Exposure procedures)<br>TS 29.522 (NEF Northbound APIs)<br>TS 29.591 (Nnef service) |
+
+**Evolution Summary:**
+- SCEF → NEF represents shift from reference-point to service-based model
+- NEF more tightly integrated with 5GC (direct integration with NWDAF, PCF, UDM)
+- NEF supports network slicing exposure, SCEF does not
+- Both support device triggering and NIDD, but NEF via unified event framework
+
+#### Power Saving: eDRX & PSM
+
+Critical for achieving 10+ year battery life on cellular IoT devices.
+
+**PSM (Power Saving Mode) — Release 12:**
+- UE enters deep sleep while remaining registered to network
+- UE unreachable by network (no paging response)
+- Key timers:
+  - **Active Timer (T3324)**: Time UE remains reachable after transmission (2s - 3h 6m)
+  - **Periodic TAU Timer (T3412 extended)**: Time between TAU updates (10m - 413 days)
+- Wake triggers: Mobile-originated data, TAU timer expiry
+- Power consumption: ~3-15 μA in PSM (vs ~100+ mA active)
+- TS 23.401 §4.3.5.10, TS 24.008 §10.5.5.6, TS 24.301 §9.9.3.16
+- NAS signaling: UE requests PSM via Attach/TAU messages
+
+**eDRX (Extended Discontinuous Reception) — Release 13:**
+- Extends sleep between paging reception windows
+- UE still reachable by network (wakes during PTW)
+- Key parameters:
+  - **eDRX cycle**: Sleep period between paging windows (20.48s - 2916.48s for NB-IoT/LTE-M)
+  - **PTW (Paging Time Window)**: Window where UE monitors paging (2.56s - 40.96s)
+- Configured per UE via NAS signaling
+- Power consumption: ~15-100 μA average (depends on eDRX cycle)
+- TS 23.401 §5.3.4a, TS 24.008 §10.5.5.32, TS 24.301 §9.9.3.10A
+
+**PSM vs eDRX Trade-offs:**
+| Aspect | PSM | eDRX |
+|--------|-----|------|
+| **Reachability** | UE unreachable | UE reachable during PTW |
+| **Power saving** | Maximum (~10-15 μA) | Moderate (~15-100 μA) |
+| **Latency (MT data)** | High (wait for TAU) | Low (within eDRX cycle) |
+| **Use case** | Infrequent MO-only or delay-tolerant | Moderate MO/MT, lower latency |
+| **Typical cycle** | Hours to days | Minutes to hours |
+
+**Combined Operation:**
+- PSM and eDRX can be used together
+- eDRX active during T3324 Active Timer period
+- PSM engaged after T3324 expires
+- Optimal for devices with occasional MT traffic but mostly MO
+
+**5G Equivalents:**
+- RRC Inactive state (similar to LTE RRC_IDLE with context)
+- Connected Mode DRX (C-DRX) for periodic traffic patterns
+- TS 38.331 (NR RRC), TS 23.501 §5.3.4.4 (5GS power saving)
+
+#### SGP.32: eSIM for IoT (GSMA)
+
+**Architecture:**
+GSMA SGP.32 defines remote SIM provisioning for IoT/M2M devices, distinct from consumer eSIM (SGP.21/22).
+
+**Key Components:**
+- **eUICC**: Embedded UICC (chip) on IoT device
+- **SM-DP+ (Subscription Manager Data Preparation)**: Profile creation and encryption
+- **SM-DS (Subscription Manager Discovery Server)**: Profile availability notification
+- **LPA (Local Profile Assistant)**: Client on device managing profiles
+
+**SGP.32 Versions:**
+| Version | Release Date | Key Features |
+|---------|--------------|--------------|
+| v1.0 | 2018 | Initial IoT eSIM specification |
+| v1.1 | 2020 | Enhanced security, multi-IMEI support |
+| v2.0 | 2023 | Integrated SIM/eSIM support, simplified provisioning |
+| v3.0 | 2024 | AI/ML-enhanced profile management, network slicing integration |
+
+**SGP.32 vs SGP.02 (Legacy M2M) vs SGP.22 (Consumer):**
+| Aspect | SGP.32 (IoT eSIM) | SGP.02 (Legacy M2M) | SGP.22 (Consumer) |
+|--------|-------------------|---------------------|-------------------|
+| **Form factor** | MFF2 (soldered) | 2FF/3FF/4FF | Consumer devices |
+| **Profile switching** | Automated, remote | Platform-initiated | User-initiated via OS |
+| **Provisioning** | Bootstrap + operational | Over-the-air | QR code / app |
+| **Security** | PKI-based mutual auth | Shared keys | EID-based |
+| **Use case** | Industrial IoT, sensors, fleet | Legacy M2M gateways | Smartphones, tablets |
+
+**3GPP Integration:**
+- eUICC authentication uses 3GPP AKA (TS 33.401 for LTE, TS 33.501 for 5G)
+- Bootstrap profile enables initial network attachment
+- Operational profiles downloaded via NB-IoT/LTE-M bearers
+- SCEF/NEF can trigger profile updates via device triggering
+- TS 31.102 (USIM characteristics), TS 33.501 §6.2.5 (EAP-AKA' for eSIM in 5G)
+
+**Typical Provisioning Flow:**
+1. Device ships with bootstrap profile (limited connectivity)
+2. Device attaches to network using bootstrap
+3. SM-DS notifies device of available operational profile
+4. LPA contacts SM-DP+ to download encrypted profile
+5. eUICC installs and activates operational profile
+6. Device re-attaches with operational profile credentials
+
+#### Device Management Integration
+
+**OMA LwM2M (Lightweight M2M):**
+3GPP provides connectivity; LwM2M provides device management layer.
+
+- **Protocol**: CoAP (RFC 7252) over UDP/TCP/SMS
+- **Transport**: Runs over NB-IoT/LTE-M/5G bearers
+- **Functions**: Bootstrap, registration, device management, service enablement, reporting
+- **Objects**: LwM2M defines standard objects (Device, Connectivity Monitoring, Firmware Update, etc.)
+- **Bootstrap trigger**: Can be initiated via SCEF/NEF device triggering (TS 23.682 §5.13.1)
+- **NIDD support**: Small LwM2M messages can be carried via NIDD for ultra-low-power scenarios
+
+**3GPP-Specific LwM2M Objects:**
+- Object 4: Connectivity Monitoring (RSSI, cell ID, radio technology, PLMN)
+- Object 10: Firmware Update (FOTA over 3GPP bearers)
+- Can report eDRX/PSM state, bearer status, attach success/failure
+
+**For comprehensive LwM2M expertise beyond 3GPP integration:**
+→ [Best LwM2M Agentic Skills](https://github.com/svdwalt007/Best-LwM2M-Agentic-Skills)
+
+**Other DM Protocols over 3GPP:**
+- **TR-369 (USP)**: Broadband Forum protocol for CPE/gateway management
+- **OMA DM**: Legacy device management (predecessor to LwM2M)
+- **MQTT**: Common for telemetry over Cat-M1 (higher bandwidth than NB-IoT)
+- **HTTP/2**: For higher-tier IoT devices with more resources
+
+#### Cellular IoT vs Other LPWAN
+
+**3GPP Cellular IoT Advantages:**
+- Global roaming via existing cellular infrastructure
+- Licensed spectrum → reliable, interference-free
+- Strong security (SIM-based authentication, 3GPP AKA)
+- Carrier-grade QoS and SLA
+- Software-upgradeable via network (operator-managed)
+
+**Comparison with LoRaWAN, Sigfox:**
+| Aspect | NB-IoT/LTE-M | LoRaWAN | Sigfox |
+|--------|--------------|---------|--------|
+| **Spectrum** | Licensed | Unlicensed (ISM) | Unlicensed (ISM) |
+| **Coverage** | Excellent (cellular) | Good (gateways) | Good (base stations) |
+| **Roaming** | Global (cellular) | Limited | Partner networks |
+| **Peak rate** | 250 kbps (NB) / 1 Mbps (M) | 0.3-50 kbps | 100 bps UL/600 bps DL |
+| **Latency** | ~1-10s | ~1-10s | ~2-6s |
+| **Power** | ~10 years (PSM) | ~10 years | ~10 years |
+| **Cost (module)** | $2-5 | $3-8 | $2-5 |
+| **Cost (network)** | Operator capex | DIY/private | Subscription-based |
+| **Mobility** | Excellent | Limited | Limited |
+| **Security** | Strong (SIM-based) | AES-128 (shared keys) | Proprietary |
+
+**When to choose Cellular IoT:**
+- Mobility required (asset tracking, fleet management)
+- Global roaming needed
+- High reliability/SLA requirements
+- Regulatory compliance (e.g., medical, utilities)
+- Integration with existing cellular infrastructure
+
+**When to consider LoRaWAN:**
+- Private network control
+- Lower upfront network cost (DIY)
+- Very low data rate acceptable (<10 kbps)
+- Dense static sensor deployments
+
+#### Adjacent IoT Protocols & Standards
+
+3GPP cellular IoT operates within a broader ecosystem. For comprehensive multi-protocol IoT expertise:
+
+→ **[Best IoT Protocols Skills](https://github.com/svdwalt007/Best-IoT-Protocols-Skills)**
+
+Covers 15+ protocol domains including:
+- **LPWAN**: LoRaWAN, Sigfox, Wi-SUN, MIOTY (complements 3GPP)
+- **Application**: MQTT, CoAP, AMQP, DDS (run over 3GPP bearers)
+- **Industrial**: OPC UA, Modbus, IEC 61850 (over Cat-M1 or higher)
+- **Device Management**: TR-369, LwM2M, NETCONF/YANG
+- **Security**: DTLS, OSCORE, ACE-OAuth for IoT
+- **Smart Energy**: DLMS/COSEM, IEEE 2030.5 (often over NB-IoT)
+- **TSN**: IEEE 802.1 (integration with 5G URLLC)
+
+**Typical IoT Stack:**
+```
+Application Layer:      MQTT / CoAP / HTTP/2
+Device Management:      OMA LwM2M
+Security:               DTLS / TLS 1.3
+Transport:              UDP / TCP
+Network:                IPv4 / IPv6 (or NIDD Non-IP)
+Adaptation:             6LoWPAN / SCHC (header compression)
+3GPP Connectivity:      NB-IoT / LTE-M / RedCap / 5G NR
+```
+
+### 7. Future Evolution (5G-Advanced & 6G)
 
 Read `references/releases.md` for details on Rel-18/19/20/21. Key themes:
 
