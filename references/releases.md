@@ -128,6 +128,18 @@
 ### Release 13 (Q1 2016) — "LTE-Advanced Pro"
 - **NB-IoT (Narrowband IoT)**: 180 kHz bandwidth, deep coverage for IoT
 - **LTE-M (Cat-M1 / eMTC)**: 1.4 MHz bandwidth for IoT, VoLTE support
+- **CIoT EPS Optimizations**: Control Plane (CP) and User Plane (UP) optimizations for cellular IoT
+  - CP CIoT: Data via NAS signaling (max 1600 bytes), no user plane setup
+  - UP CIoT: RRC Suspend/Resume without full detach/attach
+  - Power Saving Mode (PSM) enhanced for 10+ year battery life
+  - Extended Discontinuous Reception (eDRX): Extended sleep cycles (20.48s - 2916.48s)
+- **SCEF (Service Capability Exposure Function)**: Network exposure for IoT and enterprise
+  - Device triggering via SMS or IWK-SCEF
+  - Monitoring capabilities: location, roaming status, UE reachability
+  - Non-IP Data Delivery (NIDD) for CIoT devices via control plane
+  - API exposure to SCS/AS (Service Capability Server / Application Server)
+  - Interfaces: T6a (MME↔SCEF), T6b (SCEF↔HSS), T8 (SCEF↔SCS/AS)
+  - TS 23.682: Architecture enhancements to facilitate communications with packet data networks
 - **LAA (Licensed Assisted Access)**: LTE in 5 GHz unlicensed spectrum (DL only)
 - **LWA (LTE-WLAN Aggregation)**
 - Up to 32 component carriers CA (theoretical)

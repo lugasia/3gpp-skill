@@ -14,6 +14,7 @@ This skill gives Claude deep, standards-grounded expertise across the full 3GPP 
 - **All releases**: Phase 1 through Release 21, with detailed feature breakdowns
 - **Protocol stacks**: PHY, MAC, RLC, PDCP, SDAP, RRC, NAS — with LTE vs NR differences
 - **Core network**: EPC to 5GC/SBA evolution, all network functions (AMF, SMF, UPF, etc.)
+- **IoT & Machine-Type Communications**: NB-IoT, LTE-M, RedCap, NIDD, SCEF/NEF, eDRX/PSM, cIoT optimizations, SGP.32 eSIM
 - **Deployment**: Network planning, spectrum strategy, migration paths (NSA/SA options), O-RAN
 - **Security**: Authentication (EPS-AKA, 5G-AKA), SUPI/SUCI, IMSI catcher analysis
 - **Practical consulting**: Link budgets, cell planning, troubleshooting, interoperability
@@ -31,6 +32,13 @@ This skill gives Claude deep, standards-grounded expertise across the full 3GPP 
 
 **Deployment planning:**
 > "We're migrating from LTE/EPC to 5G on a budget. Walk me through the NSA vs SA options."
+
+**IoT & cellular connectivity:**
+> "Explain how NIDD works with SCEF in LTE for NB-IoT devices. How does this compare to 5G with NEF?"
+
+> "What's the difference between CP CIoT and UP CIoT optimization? When should I use each?"
+
+> "How do I configure PSM and eDRX for a smart meter that reports once per hour?"
 
 ## Installation
 
@@ -54,8 +62,10 @@ Copy the `3gpp-expert/` folder (containing `SKILL.md` and `references/`) into yo
 
 | File | Purpose |
 |------|---------|
-| `SKILL.md` | Main skill instructions — response patterns, 6 knowledge domains, when to web search |
+| `SKILL.md` | Main skill instructions — response patterns, 7 knowledge domains (incl. IoT), when to web search |
 | `references/releases.md` | Detailed release-by-release reference (Phase 1 → Rel-21) with spec series table |
+| `references/iot-detailed.md` | Comprehensive IoT reference: NB-IoT, LTE-M, RedCap, NIDD, SCEF/NEF, power saving, eSIM |
+| `references/diagrams/*.md` | Architecture diagrams (NIDD flows, SCEF/NEF, CIoT optimizations, eDRX/PSM) |
 | `3gpp-expert.skill` | Pre-packaged installable file |
 
 ## Coverage
@@ -73,7 +83,48 @@ Copy the `3gpp-expert/` folder (containing `SKILL.md` and `references/`) into yo
 
 ### Specification Series
 
-Covers TS 21–38 series with go-to specs for architecture (TS 23.501), NR radio (TS 38.xxx), NAS (TS 24.501), security (TS 33.501), and more.
+Covers TS 21–38 series with go-to specs for architecture (TS 23.501), NR radio (TS 38.xxx), NAS (TS 24.501), security (TS 33.501), IoT (TS 23.682, TS 36.xxx for NB-IoT/LTE-M), and more.
+
+## IoT & Machine-Type Communications
+
+This skill now includes **comprehensive cellular IoT coverage**:
+
+### Technologies
+- **NB-IoT (Narrowband IoT)**: 180 kHz, deep coverage, 10+ year battery life
+- **LTE-M (Cat-M1)**: 1.4 MHz, VoLTE support, mobility
+- **RedCap (Reduced Capability)**: 5G NR for industrial sensors, wearables, video
+
+### Network Exposure
+- **SCEF (4G)**: Service Capability Exposure Function for device triggering, monitoring, NIDD
+- **NEF (5G)**: Network Exposure Function with enhanced analytics, slicing, service-based architecture
+- Complete API reference and comparison tables
+
+### Optimizations & Power Saving
+- **CIoT EPS Optimizations**:
+  - Control Plane (CP) CIoT: Data in NAS signaling (max 1600 bytes)
+  - User Plane (UP) CIoT: RRC Suspend/Resume without full detach
+- **NIDD (Non-IP Data Delivery)**: End-to-end flows for LTE and 5G
+- **PSM (Power Saving Mode)**: Deep sleep, unreachable state (T3324, T3412 timers)
+- **eDRX (Extended DRX)**: Extended paging cycles (20s - 2916s)
+
+### eSIM & Provisioning
+- **SGP.32**: GSMA eSIM for IoT (v1.0 through v3.0)
+- Bootstrap vs operational profiles
+- Remote provisioning architecture (SM-DP+, SM-DS, LPA)
+
+### Device Management
+- **OMA LwM2M** integration over 3GPP bearers
+- Cross-references to [Best LwM2M Skills](https://github.com/svdwalt007/Best-LwM2M-Agentic-Skills)
+- Cross-references to [Best IoT Protocols Skills](https://github.com/svdwalt007/Best-IoT-Protocols-Skills)
+
+### Architecture Diagrams
+Detailed Mermaid diagrams for:
+- NIDD with LTE/SCEF and 5G/NEF
+- CIoT optimization message flows (CP vs UP)
+- eDRX and PSM timing diagrams
+- SCEF vs NEF comparison architectures
+
+See `references/diagrams/` for visual flows and `references/iot-detailed.md` for comprehensive coverage.
 
 ## Contributing
 
