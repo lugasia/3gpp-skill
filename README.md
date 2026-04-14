@@ -3,7 +3,7 @@
 A comprehensive 3GPP telecommunications skill that turns Claude into a senior telecom consultant — covering everything from GSM (1992) through 6G (Release 21).
 
 <p align="center">
-  <img src="3gpp_logo.svg" alt="3GPP Logo" width="300">
+  <img src="3killpp.jpeg" alt="3GPP Expert Skill" width="300">
 </p>
 
 ## What It Does
