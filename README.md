@@ -23,6 +23,9 @@ This skill gives Claude deep, standards-grounded expertise across the full 3GPP 
 **Deep protocol questions:**
 > "Walk me through how a UE scans for and selects the best cell, from power-on to RRC Connected."
 
+**PHY layer precision:**
+> "What sequence is used for PSS in 5G NR?" — correctly answers m-sequence (not Zadoff-Chu, which is a common AI hallucination)
+
 **Cross-generation comparisons:**
 > "Explain the differences between LTE and 5G NR RRC state machines. What is RRC_INACTIVE?"
 
@@ -47,15 +50,19 @@ Copy the `3gpp-expert/` folder (containing `SKILL.md` and `references/`) into yo
 ~/.claude/skills/3gpp-expert/
 ├── SKILL.md
 └── references/
-    └── releases.md
+    ├── releases.md
+    ├── phy-layer.md
+    └── working-groups.md
 ```
 
 ## What's Inside
 
 | File | Purpose |
 |------|---------|
-| `SKILL.md` | Main skill instructions — response patterns, 6 knowledge domains, when to web search |
+| `SKILL.md` | Main skill instructions — 7 knowledge domains, critical PHY facts, response patterns, when to web search |
 | `references/releases.md` | Detailed release-by-release reference (Phase 1 → Rel-21) with spec series table |
+| `references/phy-layer.md` | **NEW** — PHY layer deep-dive: synchronization signals per RAT (PSS/SSS sequences), physical channels, reference signals, RACH preambles, channel mapping |
+| `references/working-groups.md` | **NEW** — Full RAN/SA/CT Working Group structure with owned specs and typical topics |
 | `3gpp-expert.skill` | Pre-packaged installable file |
 
 ## Coverage
