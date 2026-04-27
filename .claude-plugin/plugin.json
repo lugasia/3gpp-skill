@@ -1,0 +1,25 @@
+{
+  "name": "3gpp-expert",
+  "version": "1.0.0",
+  "description": "Turns Claude into a senior 3GPP telecommunications consultant — full coverage of standards, releases, protocol stacks, core network architecture, deployment, and 6G evolution.",
+  "author": {
+    "name": "lugasia",
+    "url": "https://github.com/lugasia"
+  },
+  "homepage": "https://github.com/lugasia/3gpp-skill",
+  "repository": "https://github.com/lugasia/3gpp-skill",
+  "license": "MIT",
+  "keywords": [
+    "3gpp",
+    "telecom",
+    "5g",
+    "nr",
+    "lte",
+    "6g",
+    "ran",
+    "5gc",
+    "phy",
+    "rrc",
+    "o-ran"
+  ]
+}
