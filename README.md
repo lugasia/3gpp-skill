@@ -1,14 +1,17 @@
-# 3GPP Expert Skill for Claude
+# 3GPP Expert — Claude Plugin + Skill
 
-A comprehensive 3GPP telecommunications skill that turns Claude into a senior telecom consultant — covering everything from GSM (1992) through 6G (Release 21).
+Turns Claude into a senior 3GPP telecommunications consultant — covering everything from GSM (1992) through 6G (Release 21). Ships in two forms from one repo:
+
+- **Claude Code plugin** (installed via `/plugin marketplace`) — for CLI/IDE usage
+- **Claude Skill bundle** (`.skill` file) — for claude.ai, Claude Desktop, and Claude for Work
 
 <p align="center">
-  <img src="3killpp.jpeg" alt="3GPP Expert Skill" width="300">
+  <img src="3killpp.jpeg" alt="3GPP Expert" width="300">
 </p>
 
 ## What It Does
 
-This skill gives Claude deep, standards-grounded expertise across the full 3GPP ecosystem:
+Deep, standards-grounded expertise across the full 3GPP ecosystem:
 
 - **All generations**: 2G/GSM, 3G/UMTS, 4G/LTE, 5G NR, 5G-Advanced, 6G
 - **All releases**: Phase 1 through Release 21, with detailed feature breakdowns
@@ -18,13 +21,15 @@ This skill gives Claude deep, standards-grounded expertise across the full 3GPP 
 - **Security**: Authentication (EPS-AKA, 5G-AKA), SUPI/SUCI, IMSI catcher analysis
 - **Practical consulting**: Link budgets, cell planning, troubleshooting, interoperability
 
+Auto-triggers on any mention of 3GPP, a RAT (GSM/UMTS/LTE/NR), a protocol layer (RRC/NAS/PDCP/MAC/PHY), a 5G feature (slicing/URLLC/MIMO/NTN/RedCap), or any TS spec number.
+
 ## Example Questions It Handles
 
 **Deep protocol questions:**
 > "Walk me through how a UE scans for and selects the best cell, from power-on to RRC Connected."
 
 **PHY layer precision:**
-> "What sequence is used for PSS in 5G NR?" — correctly answers m-sequence (not Zadoff-Chu, which is a common AI hallucination)
+> "What sequence is used for PSS in 5G NR?" — correctly answers m-sequence (not Zadoff-Chu, a common AI hallucination)
 
 **Cross-generation comparisons:**
 > "Explain the differences between LTE and 5G NR RRC state machines. What is RRC_INACTIVE?"
@@ -37,16 +42,50 @@ This skill gives Claude deep, standards-grounded expertise across the full 3GPP 
 
 ## Installation
 
-### Claude Desktop (Cowork)
+### Option A — Claude Code (CLI / IDE)
 
-1. Download `3gpp-expert.skill` from [Releases](https://github.com/lugasia/3gpp-skill/releases)
-2. Open it — Claude will prompt you to install
+This repo is a single-plugin Claude Code marketplace. From inside Claude Code:
 
-### Manual Install
-
-Copy the `3gpp-expert/` folder (containing `SKILL.md` and `references/`) into your Claude skills directory:
-
+```text
+/plugin marketplace add lugasia/3gpp-skill
+/plugin install 3gpp-expert@3gpp-skill
 ```
+
+The skill auto-triggers on any 3GPP-related question.
+
+**Local development install** (without publishing):
+
+```bash
+git clone https://github.com/lugasia/3gpp-skill.git
+claude --plugin-dir ./3gpp-skill
+```
+
+### Option B — claude.ai (web)
+
+Skills are available on Pro, Max, Team, and Enterprise plans.
+
+1. Download [`3gpp-expert.skill`](./3gpp-expert.skill) from this repo (it's a zipped skill bundle).
+2. In claude.ai, open **Settings → Capabilities → Skills** (exact wording may vary by plan).
+3. Click **Upload skill** and select the `.skill` file.
+4. Start a new conversation — the skill auto-triggers on 3GPP topics.
+
+### Option C — Claude Desktop (Mac / Windows)
+
+1. Download [`3gpp-expert.skill`](./3gpp-expert.skill).
+2. Double-click the file — Claude Desktop will prompt to install it, **or** go to **Settings → Skills → Upload**.
+3. Start a new conversation.
+
+### Option D — Claude for Work / Enterprise ("Cowork")
+
+Same flow as claude.ai (Option B). On Team/Enterprise plans, a workspace admin can upload the skill once at the **organization level** so it's available to every member. The setting is under **Admin → Capabilities → Skills** in the workspace console (exact label may vary).
+
+> If the upload UI isn't visible on your plan, check with your workspace owner — Skills may need to be enabled at the org level first. See Anthropic's official Skills documentation for the current UI.
+
+### Option E — Manual install (any surface that reads a skill directory)
+
+Copy `skills/3gpp-expert/` to wherever your client looks for skills (for Claude Code personal scope: `~/.claude/skills/3gpp-expert/`):
+
+```text
 ~/.claude/skills/3gpp-expert/
 ├── SKILL.md
 └── references/
@@ -55,15 +94,34 @@ Copy the `3gpp-expert/` folder (containing `SKILL.md` and `references/`) into yo
     └── working-groups.md
 ```
 
-## What's Inside
+## Repo Layout
 
-| File | Purpose |
+```
+3gpp-skill/
+├── .claude-plugin/
+│   ├── plugin.json          # plugin manifest
+│   └── marketplace.json     # single-plugin marketplace manifest
+├── skills/
+│   └── 3gpp-expert/
+│       ├── SKILL.md         # main skill prompt
+│       └── references/
+│           ├── releases.md
+│           ├── phy-layer.md
+│           └── working-groups.md
+├── 3gpp-expert.skill        # prebuilt zip bundle for claude.ai / Desktop / Cowork upload
+├── LICENSE
+└── README.md
+```
+
+| Path | Purpose |
 |------|---------|
-| `SKILL.md` | Main skill instructions — 7 knowledge domains, critical PHY facts, response patterns, when to web search |
-| `references/releases.md` | Detailed release-by-release reference (Phase 1 → Rel-21) with spec series table |
-| `references/phy-layer.md` | **NEW** — PHY layer deep-dive: synchronization signals per RAT (PSS/SSS sequences), physical channels, reference signals, RACH preambles, channel mapping |
-| `references/working-groups.md` | **NEW** — Full RAN/SA/CT Working Group structure with owned specs and typical topics |
-| `3gpp-expert.skill` | Pre-packaged installable file |
+| `.claude-plugin/plugin.json` | Claude Code plugin manifest (name, version, author, keywords) |
+| `.claude-plugin/marketplace.json` | Marketplace manifest — lets users add this repo via `/plugin marketplace add` |
+| `skills/3gpp-expert/SKILL.md` | Main skill instructions — 7 knowledge domains, critical PHY facts, response patterns, when to web search |
+| `skills/3gpp-expert/references/releases.md` | Release-by-release reference (Phase 1 → Rel-21) with spec series table |
+| `skills/3gpp-expert/references/phy-layer.md` | PHY deep-dive: PSS/SSS sequences, physical channels, reference signals, RACH preambles, channel mapping |
+| `skills/3gpp-expert/references/working-groups.md` | RAN/SA/CT Working Group structure with owned specs and typical topics |
+| `3gpp-expert.skill` | Zipped copy of `skills/3gpp-expert/` for non-CLI clients |
 
 ## Coverage
 
@@ -84,15 +142,19 @@ Covers TS 21–38 series with go-to specs for architecture (TS 23.501), NR radio
 
 ## Contributing
 
-Contributions are welcome! If you spot an inaccuracy, want to add coverage for a specific topic, or have suggestions:
+Contributions are welcome. If you spot an inaccuracy, want to add coverage for a specific topic, or have suggestions:
 
-1. Open an issue describing the improvement
-2. Fork the repo and submit a PR
-3. Make sure any spec references are accurate and cite the correct TS/TR numbers
+1. Open an issue describing the improvement.
+2. Fork the repo and submit a PR against `skills/3gpp-expert/` (that's the canonical source for both the plugin and the `.skill` bundle).
+3. After changing `SKILL.md` or any `references/*.md`, **rebuild the bundle** so claude.ai / Desktop users get the update:
+   ```bash
+   cd skills/3gpp-expert && zip -r ../../3gpp-expert.skill SKILL.md references/
+   ```
+4. Make sure any spec references are accurate and cite the correct TS/TR numbers.
 
 ## Support This Project
 
-If you find this skill useful, consider supporting its development:
+If you find this useful, consider supporting its development:
 
 - [GitHub Sponsors](https://github.com/sponsors/lugasia)
 - Star this repo to help others find it

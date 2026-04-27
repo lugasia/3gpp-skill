@@ -1,0 +1,14 @@
+{
+  "name": "3gpp-skill",
+  "owner": {
+    "name": "lugasia",
+    "url": "https://github.com/lugasia"
+  },
+  "plugins": [
+    {
+      "name": "3gpp-expert",
+      "source": ".",
+      "description": "3GPP telecommunications expert — 2G through 6G, all releases, full protocol stack, core network, and deployment guidance."
+    }
+  ]
+}
